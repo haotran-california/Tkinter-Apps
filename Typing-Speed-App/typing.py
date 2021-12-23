@@ -2,28 +2,7 @@ from tkinter import *
 from tkinter import font 
 from tkinter import messagebox
 from timeit import default_timer as timer 
-import random
-
-# def randomSentence(): 
-#     file = open("sentence.txt", "r")
-#     sentenceList = []
-#     for sentence in file: 
-#         sentenceList.append(sentence)
-#     randomSentence = random.choice(sentenceList)
-#     return randomSentence
-
-def randomSentence(): 
-    file = open("randomWords.txt", "r")
-    sentenceLength = random.randint(5, 5)
-    sentence = ""
-    word_list = [word for word in file]
-
-    for word in range(sentenceLength): 
-        randomWord = random.choice(word_list)
-        randomWord = randomWord.split()
-        sentence = sentence + randomWord[0] + " "
-
-    return sentence
+from functions import randomSentence, findfWordLengths
 
 def startTime(event): 
     global start 
@@ -55,14 +34,6 @@ def checkAnswer(event):
     wpm = int(wpm / (time_elapsed / 60))
     print(wpm)
     return wpm
-
-def findfWordLengths(sentence): 
-    wordLengths = []
-    for word in sentence: 
-        length = len(word)
-        wordLengths.append(length)
-
-    return wordLengths
 
 def selectedWord(event, wordLengths): 
     global index1
@@ -123,6 +94,7 @@ window.geometry("500x500")
 #SETUP 
 sentence = randomSentence()
 wordLength = findfWordLengths(sentence)
+
 # lbl_displaySentence = Label(text=sentence)
 # lbl_displaySentence.grid(row=0, column = 0)
 txt_wordBox = Text(width=len(sentence), height=1)

@@ -56,6 +56,14 @@ def checkAnswer(event):
     print(wpm)
     return wpm
 
+def findfWordLengths(sentence): 
+    wordLengths = []
+    for word in sentence: 
+        length = len(word)
+        wordLengths.append(length)
+
+    return wordLengths
+
 def selectedWord(event, wordLengths): 
     global index1
     global index2 
@@ -103,14 +111,18 @@ def bolder():
     else: 
         txt_wordBox.tag_add("bold", "sel.first", "sel.last")
 
+#GLOBAL VARIABLES
 inital = True
 index, index1, index2 = None, None, None 
 
+#INITALIZE WINDOW 
 window = Tk()
 window.title("Typing Test")
 window.geometry("500x500")
 
+#SETUP 
 sentence = randomSentence()
+wordLength = findfWordLengths(sentence)
 # lbl_displaySentence = Label(text=sentence)
 # lbl_displaySentence.grid(row=0, column = 0)
 txt_wordBox = Text(width=len(sentence), height=1)

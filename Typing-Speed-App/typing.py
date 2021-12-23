@@ -2,55 +2,35 @@ from tkinter import *
 from tkinter import font 
 from tkinter import messagebox
 from timeit import default_timer as timer 
-from functions import randomSentence, findfWordLengths
-
-def startTime(event): 
-    global start 
-    global inital
-    if inital == True: 
-        start = timer()
-        inital = False
+from functions import randomSentence, findWordLengths, checkAnswer
         
-def checkAnswer(event): 
-    end = timer()
-    time_elapsed = end - start 
-    answer = ent_userInput.get()
-    error = 0
-
-    #difference in length
-    if len(sentence) != len(answer): 
-        error += abs(len(sentence) - len(answer))
-
-    #difference in letters
-    user_sentence = ent_userInput.get()
-    num_letters = len(sentence)
-    for letter in range(num_letters): 
-        if sentence[letter] != user_sentence[letter]: 
-            error += 1 
-    print("the number of errors are: ", error)
-
-    wpm = len(sentence)/5
-    wpm = wpm - error 
-    wpm = int(wpm / (time_elapsed / 60))
-    print(wpm)
-    return wpm
-
 def selectedWord(event, wordLengths): 
     global index1
     global index2 
     global index
+    global start 
+    global inital
+
+    #initalize start time 
+    if inital == True: 
+        start = timer()
+        inital = False
+
     word = ent_userInput.get()
     numWords = len(wordLengths)
+    userInput = ""
     
-
     if len(word) + 1 > wordLengths[index] and index < numWords - 1: 
         index += 1 
         index1 = index1 + wordLengths[index] + 1
         index2 = index2 + wordLengths[index] + 1
+        userInput += ent_userInput.get()
         ent_userInput.delete(0, END)
         
     if len(word) + 1 > wordLengths[index] and index == numWords - 1: 
+        userInput += ent_userInput.get()
         ent_userInput.delete(0, END)
+        checkAnswer(sentence, userInput)
 
     highlightWord(index1, index2)
     bolder()
@@ -84,25 +64,25 @@ def bolder():
 
 #GLOBAL VARIABLES
 inital = True
-index, index1, index2 = None, None, None 
+index, index1, index2 = 0, 0, 0
 
 #INITALIZE WINDOW 
 window = Tk()
 window.title("Typing Test")
 window.geometry("500x500")
 
-#SETUP 
+#SETUP FUNCTIONS
 sentence = randomSentence()
-wordLength = findfWordLengths(sentence)
+wordLength = findWordLengths(sentence)
 
-# lbl_displaySentence = Label(text=sentence)
-# lbl_displaySentence.grid(row=0, column = 0)
+#WORDBOX WIDGET 
 txt_wordBox = Text(width=len(sentence), height=1)
 txt_wordBox.insert(INSERT, sentence)
 txt_wordBox.grid(row = 0, column=0)
 
+#ENTRY BOX WIDGET 
 ent_userInput = Entry(width=len(sentence) + 12)
-ent_userInput.bind("<Key>", startTime)
+ent_userInput.bind("<Key>", lambda event: selectedWord(event, wordLength))
 ent_userInput.bind("<Return>", checkAnswer)
 ent_userInput.grid(row = 1, column=0)
 ent_userInput.focus_set()

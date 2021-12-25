@@ -1,3 +1,4 @@
+from timeit import default_timer as timer 
 import random
 
 def randomSentence(): 
@@ -21,7 +22,7 @@ def findWordLengths(sentence):
 
     return wordLengths
 
-def checkAnswer(sentence, answer): 
+def checkAnswer(sentence, answer, start): 
     end = timer()
     time_elapsed = end - start 
     error = 0
@@ -31,10 +32,9 @@ def checkAnswer(sentence, answer):
         error += abs(len(sentence) - len(answer))
 
     #difference in letters
-    user_sentence = ent_userInput.get()
     num_letters = len(sentence)
     for letter in range(num_letters): 
-        if sentence[letter] != user_sentence[letter]: 
+        if sentence[letter] != answer[letter]: 
             error += 1 
 
     wpm = len(sentence)/5
@@ -42,6 +42,11 @@ def checkAnswer(sentence, answer):
     wpm = int(wpm / (time_elapsed / 60))
     accuracy = (len(sentence)-wpm)/100
     return (wpm, accuracy)
+
+
+
+
+
 
 # def randomSentence(): 
 #     file = open("sentence.txt", "r")
@@ -51,3 +56,17 @@ def checkAnswer(sentence, answer):
 #     randomSentence = random.choice(sentenceList)
 #     return randomSentence
 
+# def bolder(): 
+#     #font definition 
+#     bold_font = font.Font(txt_wordBox, txt_wordBox.cget("font"))
+#     bold_font.config(weight = "bold")
+
+#     #configure tag 
+#     txt_wordBox.tag_configure("bold", font=bold_font)
+#     current_tags = txt_wordBox.tag_names("sel.first")
+
+#     #bold and unbold logic 
+#     if "bold" in current_tags: 
+#         txt_wordBox.tag_remove("bold", "sel.first", "sel.last")
+#     else: 
+#         txt_wordBox.tag_add("bold", "sel.first", "sel.last")

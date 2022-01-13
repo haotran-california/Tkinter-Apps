@@ -1,22 +1,22 @@
 from tkinter import * 
 from tkinter import ttk
-import sqlite3
-
+from databaseFunctions import search, loadSelectMajor
 
 window = Tk()
 window.title("UC Transfer GUI")
 window.geometry("800x500")
 
 #EVENT HANDLERS 
-def comboClick(event): 
+def comboSelect(event): 
+    #when a new school is selected load the list of majors into the selectMajor combo-box
     majors = loadSelectMajor(selectSchool.get())
     selectMajor.config(value=majors)
     selectMajor.current(0)
 
-
+#DECORATOR FUNCTION
 def newWindow(fn): 
-    def openResultWindow(*args): 
-        query = fn(*args)
+    def openResultWindow(): 
+        query = fn()
         display = Toplevel()
         college = query[1]
         major = query[2]
@@ -51,30 +51,11 @@ def newWindow(fn):
 
     return openResultWindow
 
-
-#SQL FUCTIONS
+#BUTTON FUNCTION
 @newWindow
-def search(school, major): 
-    conn = sqlite3.connect("UC_Transfer.db")
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM {} WHERE Major = (?)".format(school), (major, ))
-    result = cur.fetchall()
-
-    return result[0]
-    
-def loadSelectMajor(school): 
-    conn = sqlite3.connect("UC_Transfer.db")
-    cur = conn.cursor()
-    cur.execute("SELECT Major FROM {}".format(school))
-    results = cur.fetchall()
-    major_list = []
-    for major in results: 
-        major_list.append(major[0])
-   
-    return major_list
-
-
-
+def submitSearch(): 
+    queryResult = search(selectSchool.get(), selectMajor.get())
+    return queryResult
 
 
 schools = ["UCB", "UCD", "UCI", "UCLA", "UCR", "UCSB", "UCSC", "UCSD"]
@@ -82,17 +63,16 @@ schools = ["UCB", "UCD", "UCI", "UCLA", "UCR", "UCSB", "UCSC", "UCSD"]
 #MAIN PROGRAM WIDGETS 
 selectSchool = ttk.Combobox(window, value=schools)
 selectSchool.current(0)
-selectSchool.bind("<<ComboboxSelected>>", comboClick)
+selectSchool.bind("<<ComboboxSelected>>", comboSelect)
 selectSchool.grid(row=1, column=0)
 
 majors = loadSelectMajor(selectSchool.get())
 
 selectMajor = ttk.Combobox(window, value=majors)
 selectMajor.current(0)
-selectMajor.bind("<<ComboboxSelected>>", comboClick)
 selectMajor.grid(row=2, column=0)
 
-submitBtn = Button(text="Submit", command= lambda: search(selectSchool.get(), selectMajor.get()))
+submitBtn = Button(text="Submit", command=submitSearch)
 submitBtn.grid(row=3, column=0)
 
 window.mainloop()

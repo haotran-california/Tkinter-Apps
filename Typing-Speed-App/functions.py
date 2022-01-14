@@ -1,3 +1,5 @@
+#THIS VERSION DOES NOT WORK
+
 from timeit import default_timer as timer 
 import random
 

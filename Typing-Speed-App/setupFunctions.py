@@ -21,3 +21,15 @@ def findWordLengths(sentence):
         wordLengths.append(length)
 
     return wordLengths
+
+def openNewWindow(fn): 
+    def wrapper(*args):
+        result = fn(*args)
+        if result != -1: 
+            newWindow = Toplevel()
+            lbl_description1 = Label(master=newWindow, text="WPM: {}".format(result[0]))
+            lbl_description2 = Label(master=newWindow, text="Accuracy: {}".format(result[1]))
+            lbl_description1.grid(row=0, column=0, sticky=W)
+            lbl_description2.grid(row=1, column=0, sticky=W)
+        return result
+    return wrapper

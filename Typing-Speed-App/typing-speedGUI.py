@@ -8,6 +8,7 @@ window = Tk()
 window.title("Typing Test")
 window.geometry("500x500")
 
+#DEFINE FUNCTIONS 
 def openNewWindow(fn): 
     def wrapper(*args):
         result = fn(*args)
@@ -19,18 +20,6 @@ def openNewWindow(fn):
             lbl_description2.grid(row=1, column=0, sticky=W)
         return result
     return wrapper
-
-#DEFINE EVENT HANDLING FUNCTIONS
-def entryReturnHandler(event): 
-    print("The length of your answer is: ", len(ent_userInput.get()))
-    print("The length of the sentence is: ", len(sentence))
-
-    result = checkAnswer(sentence, ent_userInput.get(), start)
-    if result != -1: 
-        displayNewSentence()
-        
-    # print(result[0])
-    # print(result[1])
 
 @openNewWindow
 def checkAnswer(sentence, answer, start): 
@@ -59,16 +48,9 @@ def checkAnswer(sentence, answer, start):
 def displayNewSentence(): 
     sentence = randomSentence()
     txt_wordBox.config(state=NORMAL)
-    txt_wordBox.config(text=sentence)
+    txt_wordBox.delete("1.0", END)
+    txt_wordBox.insert(INSERT, sentence)
     txt_wordBox.config(state=DISABLED)
-
-
-    
-
-
-def entryKeyHandler(event): 
-    startTime()
-    #erase words after typing
 
 def startTime(): 
     global start 
@@ -76,10 +58,40 @@ def startTime():
         start = timer()
         print("Time has started")
 
+def selectWord(): 
+    index, index1, index2 = 0, 0, 0
+    word = ent_userInput.get()
+    wordLengths = findWordLengths(sentence)
+    numWords = len(wordLengths)
+    userInput = ""
+    
+    if len(word) + 1 > wordLengths[index] and index < numWords - 1: 
+        index += 1 
+        index1 = index1 + wordLengths[index] + 1
+        index2 = index2 + wordLengths[index] + 1
+        userInput += ent_userInput.get()
+        ent_userInput.delete(0, END)
+        
+    if len(word) + 1 > wordLengths[index] and index == numWords - 1: 
+        userInput += ent_userInput.get()
+        ent_userInput.delete(0, END)
+    
+
+#DEFINE EVENT HANDLING FUNCTIONS
+def entryReturnHandler(event): 
+    print("The length of your answer is: ", len(ent_userInput.get()))
+    print("The length of the sentence is: ", len(sentence))
+
+    result = checkAnswer(sentence, ent_userInput.get(), start)
+    if result != -1: 
+        displayNewSentence()
+        
+def entryKeyHandler(event): 
+    startTime()
+    #selectWord()
 
 #SETUP
 sentence = randomSentence()
-wordLength = findWordLengths(sentence)
 start = None 
 
 #WORDBOX WIDGET 
